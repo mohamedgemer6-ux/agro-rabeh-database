@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أجرو رابح | داتا حملة 11 أكتوبر – الدلتا</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#f4f7f4;--card:#fff;--text:#183028;--muted:#6d7b74;--line:#dbe5df;--green:#176f3a;--green2:#23934f;--light:#eaf6ee;--amber:#a86c00;--amberbg:#fff3d6;--red:#a33737;--redbg:#fdeaea;--blue:#255f9b;--bluebg:#e9f2fb}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--text);line-height:1.65}
+button,input,select,textarea{font:inherit} .hidden{display:none!important}
+.container{max-width:1500px;margin:auto;padding:18px}
+.hero{background:linear-gradient(135deg,#0f5d32,#173c29);color:#fff;border-radius:22px;padding:22px;box-shadow:0 14px 35px rgba(15,93,50,.18)}
+.heroTop{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.hero h1{margin:0;font-size:clamp(24px,3vw,38px)} .hero p{margin:6px 0 0;opacity:.9}
+.userbox{display:flex;gap:7px;align-items:center;flex-wrap:wrap} .tag{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:7px 10px;border-radius:999px;font-size:12px}
+.btn{border:0;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.primary{background:var(--green);color:#fff} .btn.secondary{background:#fff;color:var(--green);border:1px solid var(--line)} .btn.blue{background:var(--blue);color:#fff} .btn.red{background:#fff;color:var(--red);border:1px solid #e4c8c8} .btn.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.stats{display:grid;grid-template-columns:repeat(7,minmax(125px,1fr));gap:9px;margin:14px 0} .stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px} .stat b{display:block;font-size:25px;color:var(--green);line-height:1.2} .stat span{font-size:11px;color:var(--muted)}
+.toolbar{background:#fff;border:1px solid var(--line);border-radius:17px;padding:11px;margin:14px 0;display:grid;grid-template-columns:2fr repeat(7,1fr);gap:8px;position:sticky;top:7px;z-index:20;box-shadow:0 7px 20px rgba(0,0,0,.04)}
+input,select,textarea{width:100%;border:1px solid #cfdad4;background:#fff;border-radius:10px;padding:10px;color:var(--text);outline:none} textarea{min-height:95px;resize:vertical} input:focus,select:focus,textarea:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(35,147,79,.1)}
+.topactions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0} .resultbar{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:13px;margin:10px 2px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px} .card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px;cursor:pointer;transition:.18s;box-shadow:0 4px 15px rgba(0,0,0,.025)} .card:hover{transform:translateY(-2px);box-shadow:0 9px 23px rgba(0,0,0,.075);border-color:#b5cabd}
+.card h3{margin:0;font-size:18px} .sub{font-size:12px;color:var(--muted);margin-top:2px} .badges{display:flex;gap:5px;flex-wrap:wrap;margin:9px 0} .badge{padding:3px 8px;border-radius:999px;background:var(--light);color:var(--green);font-size:11px} .badge.high{background:var(--redbg);color:var(--red)} .badge.mid{background:var(--amberbg);color:var(--amber)} .badge.stage{background:var(--bluebg);color:var(--blue)}
+.lines{display:grid;gap:5px;font-size:12px} .line{display:flex;gap:7px} .k{color:var(--muted);min-width:75px} .open{border-top:1px solid var(--line);padding-top:9px;margin-top:11px;color:var(--green);font-weight:700;font-size:12px}
+.empty{background:#fff;border:1px dashed #bcc9c0;border-radius:17px;padding:30px;text-align:center;color:var(--muted);grid-column:1/-1}
+.modal{position:fixed;inset:0;background:rgba(3,20,12,.66);display:none;align-items:center;justify-content:center;padding:15px;z-index:100} .modal.show{display:flex} .panel{background:#fff;width:min(1080px,98vw);max-height:92vh;overflow:auto;border-radius:21px;box-shadow:0 25px 80px rgba(0,0,0,.32)} .panelhead{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:15px 18px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;z-index:2} .panelhead h2{margin:0;font-size:22px} .close{border:0;background:#eef4ef;width:38px;height:38px;border-radius:50%;font-size:24px;color:var(--green);cursor:pointer}
+.details{padding:16px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px} .detail{border:1px solid var(--line);background:#fbfcfb;border-radius:12px;padding:10px 12px} .detail.full{grid-column:1/-1} .label{font-size:11px;color:var(--muted);margin-bottom:3px} .value{font-size:13px;white-space:pre-wrap;word-break:break-word} .contactbar{padding:0 18px 14px;display:flex;gap:8px;flex-wrap:wrap}
+.salesbox{margin:0 18px 18px;background:#f8fbf9;border:1px solid #cfe0d5;border-radius:15px;padding:14px} .salesbox h3{margin:0 0 10px;font-size:17px} .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px} .formgrid .full{grid-column:1/-1} .savebar{display:flex;gap:8px;justify-content:flex-start;align-items:center;margin-top:10px;flex-wrap:wrap} .msg{font-size:12px;font-weight:700}
+.loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#eef6f0,#f8faf8)} .loginCard{width:min(460px,96vw);background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 20px 55px rgba(15,93,50,.12)} .loginCard h1{margin:0 0 5px;color:var(--green);font-size:28px} .loginCard p{margin:0 0 17px;color:var(--muted);font-size:13px} .loginCard .field{margin:9px 0} .error{color:var(--red);font-size:12px;margin-top:8px}
+.adminBox{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;margin:14px 0} .adminBox h2{margin:0 0 10px;font-size:18px} .adminGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px} .userRow{display:grid;grid-template-columns:2fr 2fr 1fr 1fr auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:8px 0;font-size:12px}
+@media(max-width:1150px){.grid{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr 1fr 1fr}.stats{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:720px){.container{padding:10px}.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr;position:static}.stats{grid-template-columns:1fr 1fr}.details{grid-template-columns:1fr}.detail.full{grid-column:auto}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.adminGrid{grid-template-columns:1fr}.userRow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<section id="loginView" class="loginWrap">
+  <div class="loginCard">
+    <h1>أجرو رابح</h1>
+    <p>داتا حملة 11 أكتوبر – الدلتا | دخول فريق المبيعات والإدارة</p>
+    <div class="field"><label class="label">البريد الإلكتروني</label><input id="loginEmail" type="email" autocomplete="email"></div>
+    <div class="field"><label class="label">كلمة المرور</label><input id="loginPassword" type="password" autocomplete="current-password"></div>
+    <button id="loginBtn" class="btn primary" style="width:100%;margin-top:8px">تسجيل الدخول</button>
+    <div id="loginError" class="error"></div>
+  </div>
+</section>
+
+<div id="appView" class="container hidden">
+  <section class="hero">
+    <div class="heroTop">
+      <div>
+        <h1>داتا حملة 11 أكتوبر – الدلتا</h1>
+        <p>متابعة موحدة للعملاء ومراحل البيع ومواعيد المتابعة.</p>
+      </div>
+      <div class="userbox">
+        <span class="tag" id="userTag"></span>
+        <a class="btn ghost" href="index.html">قاعدة البيانات الرئيسية</a>
+        <button class="btn ghost" id="logoutBtn">خروج</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><b id="sTotal">0</b><span>إجمالي العملاء</span></div>
+    <div class="stat"><b id="sHigh">0</b><span>أولوية عالية</span></div>
+    <div class="stat"><b id="sDealers">0</b><span>محلات / موزعون</span></div>
+    <div class="stat"><b id="sNeed">0</b><span>يحتاج متابعة</span></div>
+    <div class="stat"><b id="sToday">0</b><span>متابعات اليوم</span></div>
+    <div class="stat"><b id="sLate">0</b><span>متابعات متأخرة</span></div>
+    <div class="stat"><b id="sWon">0</b><span>تم البيع</span></div>
+  </section>
+
+  <div class="topactions">
+    <button class="btn secondary" id="resetFilters">مسح الفلاتر</button>
+    <button class="btn secondary" id="exportCsv">تصدير CSV</button>
+    <button class="btn secondary" id="profileBtn">تعديل اسمي</button>
+  </div>
+
+  <section id="adminBox" class="adminBox hidden">
+    <h2>لوحة الإدارة</h2>
+    <div class="adminGrid">
+      <div class="stat"><b id="aUnassigned">0</b><span>بدون مسؤول</span></div>
+      <div class="stat"><b id="aContacted">0</b><span>تم التواصل</span></div>
+      <div class="stat"><b id="aNegotiation">0</b><span>تفاوض / طلبية أولى</span></div>
+      <div class="stat"><b id="aUsers">0</b><span>مستخدمون نشطون</span></div>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--muted)">إدارة الأسماء والأدوار والتفعيل. إنشاء حساب جديد يتم من Supabase Authentication > Users.</div>
+    <div id="usersList"></div>
+  </section>
+
+  <section class="toolbar">
+    <input id="search" type="search" placeholder="بحث بالاسم أو الرقم أو المنطقة أو النشاط">
+    <select id="gov"><option value="">كل المحافظات</option></select>
+    <select id="area"><option value="">كل المناطق</option></select>
+    <select id="type"><option value="">كل أنواع العملاء</option></select>
+    <select id="priority"><option value="">كل الأولويات</option></select>
+    <select id="current"><option value="">كل الحالات الحالية</option></select>
+    <select id="stage"><option value="">كل مراحل البيع</option></select>
+    <select id="ownerFilter"><option value="">كل مسؤولي السيلز</option></select>
+  </section>
+
+  <div class="resultbar"><div id="count"></div><div>اضغط على العميل لعرض الملف الكامل والمتابعة</div></div>
+  <main id="grid" class="grid"></main>
+</div>
+
+<div id="leadModal" class="modal">
+  <div class="panel">
+    <div class="panelhead"><div><h2 id="mName"></h2><div class="sub" id="mSub"></div></div><button class="close" id="closeLead">×</button></div>
+    <div id="details" class="details"></div>
+    <div id="contactbar" class="contactbar"></div>
+    <div class="salesbox">
+      <h3>متابعة السيلز</h3>
+      <div class="formgrid">
+        <div><div class="label">مسؤول السيلز</div><select id="ownerSelect"></select></div>
+        <div><div class="label">مرحلة البيع</div><select id="salesStage"></select></div>
+        <div><div class="label">نتيجة آخر تواصل</div><input id="lastResult" placeholder="مثال: طلب الأسعار / مستني زيارة / لم يرد"></div>
+        <div><div class="label">موعد المتابعة القادمة</div><input id="nextDate" type="date"></div>
+        <div class="full"><div class="label">ملاحظات السيلز</div><textarea id="salesNotes" placeholder="اكتب كل التفاصيل اللي تساعد على المتابعة القادمة"></textarea></div>
+      </div>
+      <div class="savebar"><button class="btn primary" id="saveTrack">حفظ المتابعة</button><span id="saveMsg" class="msg"></span></div>
+    </div>
+  </div>
+</div>
+
+<div id="profileModal" class="modal">
+  <div class="panel" style="width:min(500px,96vw)">
+    <div class="panelhead"><h2>بيانات الحساب</h2><button class="close" id="closeProfile">×</button></div>
+    <div class="salesbox">
+      <div class="label">الاسم الظاهر لفريق الإدارة</div>
+      <input id="myName">
+      <div class="savebar"><button class="btn primary" id="saveName">حفظ الاسم</button><span id="nameMsg" class="msg"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL="https://zvzjcwccbjtwhbuloexd.supabase.co";
+const SUPABASE_KEY="sb_publishable_o_AwuQMV280svlCRcWOwjg_THbBUuPs";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const STAGES=["جديد", "تم التواصل", "لم يرد", "مهتم", "مؤهل للبيع", "تم إرسال البروشور", "تم إرسال الأسعار", "طلب زيارة مندوب", "تفاوض", "طلبية أولى", "تم البيع", "متابعة لاحقة", "غير مناسب / مغلق"];
+let session=null, profile=null, LEADS=[], TRACK=[], PROFILES=[], currentLead=null;
+
+const el=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId=(arr,id)=>arr.find(x=>String(x.id)===String(id));
+const profileMap=()=>Object.fromEntries(PROFILES.map(p=>[p.id,p]));
+
+function normalizeLead(r){return {
+  id:r.id,name:r.name||'',phone:r.phone||'',governorate:r.governorate||'',area:r.area||'',customer_type:r.customer_type||'',
+  activity_name:r.activity_name||'',interest:r.interest||'',details:r.details||'',initial_status:r.initial_status||'',
+  next_action:r.next_action||'',priority:r.priority||'',source_image:r.source_image||'',extraction_confidence:r.extraction_confidence||''
+}}
+function trFor(id){return TRACK.find(t=>String(t.lead_id)===String(id))||{}}
+function ownerName(id){if(!id)return 'بدون مسؤول'; const p=profileMap()[id]; return p?.full_name||p?.email||'مستخدم'}
+function todayStr(){return new Date().toISOString().slice(0,10)}
+
+async function login(){
+  el('loginError').textContent='';
+  const email=el('loginEmail').value.trim(), password=el('loginPassword').value;
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error){el('loginError').textContent='تعذر تسجيل الدخول: '+error.message;return}
+  session=data.session; await startApp();
+}
+el('loginBtn').onclick=login;
+el('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+
+async function startApp(){
+  const {data:authData}=await sb.auth.getSession();
+  session=authData.session;
+  if(!session){showLogin();return}
+
+  // أول حساب فقط يستطيع تفعيل نفسه كمدير. أي حساب جديد بعده يظل غير مفعل حتى يعتمدّه المدير.
+  await sb.rpc('claim_initial_admin');
+
+  let {data:profiles,error:perr}=await sb.from('profiles').select('*').order('full_name');
+  if(perr){alert('الحساب غير مفعل بعد. اطلب من الإدارة تفعيل حسابك.'); await sb.auth.signOut(); showLogin(); return}
+  PROFILES=profiles||[];
+  profile=PROFILES.find(p=>p.id===session.user.id);
+
+  if(!profile?.active){alert('الحساب غير مفعل بعد. اطلب من الإدارة تفعيل حسابك.');await sb.auth.signOut();showLogin();return}
+
+  const [lr,tr]=await Promise.all([
+    sb.from('leads').select('*').order('id'),
+    sb.from('lead_tracking').select('*')
+  ]);
+  if(lr.error){alert('تعذر تحميل العملاء: '+lr.error.message);return}
+  LEADS=(lr.data||[]).map(normalizeLead); TRACK=tr.data||[];
+  showApp(); setupFilters(); render(); renderAdmin();
+}
+function showLogin(){el('loginView').classList.remove('hidden');el('appView').classList.add('hidden')}
+function showApp(){el('loginView').classList.add('hidden');el('appView').classList.remove('hidden');el('userTag').textContent=(profile?.full_name||profile?.email||'مستخدم')+' — '+(profile?.role==='admin'?'إدارة':'مبيعات')}
+
+el('logoutBtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
+
+function unique(key){return [...new Set(LEADS.map(x=>x[key]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'ar'))}
+function fillSelect(id,vals,placeholder){
+  const s=el(id); const current=s.value; s.innerHTML=`<option value="">${placeholder}</option>`;
+  vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;s.appendChild(o)}); s.value=current;
+}
+function setupFilters(){
+  fillSelect('gov',unique('governorate'),'كل المحافظات');
+  fillSelect('area',unique('area'),'كل المناطق');
+  fillSelect('type',unique('customer_type'),'كل أنواع العملاء');
+  fillSelect('priority',unique('priority'),'كل الأولويات');
+  fillSelect('current',unique('initial_status'),'كل الحالات الحالية');
+  fillSelect('stage',STAGES,'كل مراحل البيع');
+  fillSelect('ownerFilter',PROFILES.filter(p=>p.active).map(p=>p.id),'كل مسؤولي السيلز');
+  [...el('ownerFilter').options].forEach(o=>{if(o.value) o.textContent=ownerName(o.value)})
+}
+['search','gov','area','type','priority','current','stage','ownerFilter'].forEach(id=>el(id).addEventListener(id==='search'?'input':'change',render));
+el('resetFilters').onclick=()=>{['search','gov','area','type','priority','current','stage','ownerFilter'].forEach(id=>el(id).value='');render()};
+
+function filtered(){
+  const q=el('search').value.trim().toLowerCase();
+  return LEADS.filter(x=>{
+    const t=trFor(x.id);
+    const txt=Object.values(x).join(' ').toLowerCase();
+    return (!q||txt.includes(q))
+      && (!el('gov').value||x.governorate===el('gov').value)
+      && (!el('area').value||x.area===el('area').value)
+      && (!el('type').value||x.customer_type===el('type').value)
+      && (!el('priority').value||x.priority===el('priority').value)
+      && (!el('current').value||x.initial_status===el('current').value)
+      && (!el('stage').value||(t.stage||'')===el('stage').value)
+      && (!el('ownerFilter').value||(t.sales_owner_id||'')===el('ownerFilter').value);
+  })
+}
+function priorityClass(p){return p==='عالية'?'high':p==='متوسطة'?'mid':''}
+function card(x){
+  const t=trFor(x.id), stage=t.stage||'غير محدد';
+  return `<article class="card" data-id="${x.id}">
+    <h3>${esc(x.name||'غير مذكور')}</h3><div class="sub">${esc(x.phone)}</div>
+    <div class="badges"><span class="badge ${priorityClass(x.priority)}">${esc(x.priority||'بدون أولوية')}</span><span class="badge">${esc(x.customer_type||'غير واضح')}</span><span class="badge stage">${esc(stage)}</span></div>
+    <div class="lines">
+      <div class="line"><span class="k">المنطقة</span><span>${esc((x.governorate||'')+' - '+(x.area||''))}</span></div>
+      <div class="line"><span class="k">الاهتمام</span><span>${esc(x.interest||'غير مذكور')}</span></div>
+      <div class="line"><span class="k">الحالة</span><span>${esc(x.initial_status||'غير مذكور')}</span></div>
+      <div class="line"><span class="k">المسؤول</span><span>${esc(ownerName(t.sales_owner_id))}</span></div>
+      <div class="line"><span class="k">المتابعة</span><span>${esc(t.next_followup||'غير محدد')}</span></div>
+  </article>`
+}
+function refreshStats(){
+  const today=todayStr();
+  el('sTotal').textContent=LEADS.length;
+  el('sHigh').textContent=LEADS.filter(x=>x.priority==='عالية').length;
+  el('sDealers').textContent=LEADS.filter(x=>/محل|موزع|تاجر/.test(x.customer_type||'')).length;
+  el('sWon').textContent=LEADS.filter(x=>trFor(x.id).stage==='تم البيع').length;
+  el('sToday').textContent=LEADS.filter(x=>trFor(x.id).next_followup===today).length;
+  el('sLate').textContent=LEADS.filter(x=>{const d=trFor(x.id).next_followup;return d&&d<today&&!['تم البيع','غير مناسب / مغلق'].includes(trFor(x.id).stage)}).length;
+  el('sNeed').textContent=LEADS.filter(x=>!['تم البيع','غير مناسب / مغلق'].includes(trFor(x.id).stage||'')).length;
+}
+function render(){
+  const rows=filtered();el('count').textContent='عدد النتائج: '+rows.length;
+  el('grid').innerHTML=rows.length?rows.map(card).join(''):'<div class="empty">لا توجد نتائج مطابقة.</div>';refreshStats()
+}
+el('grid').addEventListener('click',e=>{const c=e.target.closest('.card');if(c)openLead(byId(LEADS,c.dataset.id))});
+
+function phoneLinks(raw){
+  const nums=String(raw||'').split('/').map(s=>s.replace(/\D/g,'')).filter(Boolean);let out='';
+  nums.forEach((p,i)=>{const local=p.startsWith('20')?'0'+p.slice(2):p;const intl=p.startsWith('20')?p:(p.startsWith('0')?'20'+p.slice(1):p);out+=`<a class="btn primary" href="tel:${local}">اتصال${nums.length>1?' '+(i+1):''}</a><a class="btn blue" target="_blank" rel="noopener" href="https://wa.me/${intl}">واتساب${nums.length>1?' '+(i+1):''}</a>`});return out||'<span class="sub">لا يوجد رقم صالح</span>'
+}
+function openLead(x){
+  if(!x)return;currentLead=x;const t=trFor(x.id);
+  el('mName').textContent=x.name||'عميل';el('mSub').textContent=(x.governorate||'')+' — '+(x.area||'');
+  const ds=[
+    ['رقم العميل',x.id],['رقم الموبايل',x.phone],['المحافظة',x.governorate],['المركز / المنطقة',x.area],['نوع العميل',x.customer_type],
+    ['اسم النشاط / المحل',x.activity_name],['الاهتمام الأساسي',x.interest],['تفاصيل العميل',x.details,'full'],['حالة التواصل الحالية',x.initial_status],
+    ['الإجراء القادم',x.next_action,'full'],['أولوية المتابعة',x.priority],['ثقة الاستخراج',x.extraction_confidence]
+  ];
+  el('details').innerHTML=ds.map(d=>`<div class="detail ${d[2]||''}"><div class="label">${esc(d[0])}</div><div class="value">${esc(d[1]||'غير مذكور')}</div></div>`).join('');
+  el('contactbar').innerHTML=phoneLinks(x.phone);
+  el('ownerSelect').innerHTML='<option value="">بدون مسؤول</option>'+PROFILES.filter(p=>p.active).map(p=>`<option value="${p.id}">${esc(p.full_name||p.email)}</option>`).join('');
+  el('ownerSelect').value=t.sales_owner_id||'';
+  el('ownerSelect').disabled=profile.role!=='admin';
+  el('salesStage').innerHTML='<option value="">اختر المرحلة</option>'+STAGES.map(s=>`<option>${esc(s)}</option>`).join('');
+  el('salesStage').value=t.stage||'';el('lastResult').value=t.last_result||'';el('nextDate').value=t.next_followup||'';el('salesNotes').value=t.notes||'';
+  el('saveMsg').textContent='';el('leadModal').classList.add('show')
+}
+el('closeLead').onclick=()=>el('leadModal').classList.remove('show');
+el('leadModal').addEventListener('click',e=>{if(e.target===el('leadModal'))el('leadModal').classList.remove('show')});
+
+el('saveTrack').onclick=async()=>{
+  if(!currentLead)return;el('saveMsg').textContent='جاري الحفظ...';
+  const args={p_lead_id:currentLead.id,p_stage:el('salesStage').value||null,p_last_result:el('lastResult').value||null,p_next_followup:el('nextDate').value||null,p_notes:el('salesNotes').value||null,p_owner_id:profile.role==='admin'?(el('ownerSelect').value||null):null};
+  const {error}=await sb.rpc('save_lead_tracking',args);
+  if(error){el('saveMsg').style.color='var(--red)';el('saveMsg').textContent='تعذر الحفظ: '+error.message;return}
+  const r=await sb.from('lead_tracking').select('*');TRACK=r.data||[];
+  el('saveMsg').style.color='var(--green)';el('saveMsg').textContent='تم الحفظ ✓';setupFilters();render();renderAdmin();
+  const t=trFor(currentLead.id);el('ownerSelect').value=t.sales_owner_id||''
+};
+
+el('profileBtn').onclick=()=>{el('myName').value=profile.full_name||'';el('nameMsg').textContent='';el('profileModal').classList.add('show')};
+el('closeProfile').onclick=()=>el('profileModal').classList.remove('show');
+el('saveName').onclick=async()=>{const name=el('myName').value.trim();if(!name)return;const {error}=await sb.rpc('update_my_name',{p_full_name:name});if(error){el('nameMsg').textContent=error.message;return} const r=await sb.from('profiles').select('*').order('full_name');PROFILES=r.data||[];profile=PROFILES.find(p=>p.id===session.user.id);showApp();setupFilters();render();renderAdmin();el('nameMsg').textContent='تم الحفظ ✓'};
+
+function renderAdmin(){
+  if(profile.role!=='admin'){el('adminBox').classList.add('hidden');return}
+  el('adminBox').classList.remove('hidden');
+  el('aUnassigned').textContent=LEADS.filter(x=>!trFor(x.id).sales_owner_id).length;
+  el('aContacted').textContent=LEADS.filter(x=>trFor(x.id).stage==='تم التواصل').length;
+  el('aNegotiation').textContent=LEADS.filter(x=>['تفاوض','طلبية أولى'].includes(trFor(x.id).stage)).length;
+  el('aUsers').textContent=PROFILES.filter(p=>p.active).length;
+  el('usersList').innerHTML=PROFILES.map(p=>`<div class="userRow" data-user="${p.id}">
+    <input class="uName" value="${esc(p.full_name||'')}">
+    <div>${esc(p.email||'')}</div>
+    <select class="uRole"><option value="sales" ${p.role==='sales'?'selected':''}>مبيعات</option><option value="admin" ${p.role==='admin'?'selected':''}>إدارة</option></select>
+    <select class="uActive"><option value="true" ${p.active?'selected':''}>مفعل</option><option value="false" ${!p.active?'selected':''}>موقوف</option></select>
+    <button class="btn secondary saveUser">حفظ</button>
+  </div>`).join('')
+}
+el('usersList').addEventListener('click',async e=>{
+  if(!e.target.classList.contains('saveUser'))return;
+  const row=e.target.closest('.userRow'),uid=row.dataset.user;
+  const args={p_user_id:uid,p_full_name:row.querySelector('.uName').value,p_role:row.querySelector('.uRole').value,p_active:row.querySelector('.uActive').value==='true'};
+  const {error}=await sb.rpc('admin_update_profile',args);if(error){alert(error.message);return}
+  const r=await sb.from('profiles').select('*').order('full_name');PROFILES=r.data||[];profile=PROFILES.find(p=>p.id===session.user.id);setupFilters();render();renderAdmin();alert('تم حفظ المستخدم')
+});
+
+function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+el('exportCsv').onclick=()=>{
+  const heads=['رقم العميل','الاسم','رقم الموبايل','المحافظة','المنطقة','نوع العميل','الأولوية','الحالة الأصلية','مرحلة البيع','مسؤول السيلز','نتيجة آخر تواصل','موعد المتابعة','ملاحظات','آخر تحديث'];
+  const rows=LEADS.map(x=>{const t=trFor(x.id);return [x.id,x.name,x.phone,x.governorate,x.area,x.customer_type,x.priority,x.initial_status,t.stage||'',ownerName(t.sales_owner_id),t.last_result||'',t.next_followup||'',t.notes||'',t.updated_at||'']});
+  const blob=new Blob(['\ufeff'+[heads,...rows].map(r=>r.map(csvCell).join(',')).join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Agro_Rabeh_Campaign_11_Oct_Sales.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+};
+
+(async()=>{const r=await sb.auth.getSession();session=r.data.session;if(session)await startApp();else showLogin()})();
+</script>
+</body>
+</html>
